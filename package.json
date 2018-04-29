@@ -57,6 +57,10 @@
             {
                 "command": "extension.createPendingReview",
                 "title": "Create a pending review"
+            },
+            {
+                "command": "extension.sendPullRequestReview",
+                "title": "Send a review"
             } 
         ],
         "menues": {}

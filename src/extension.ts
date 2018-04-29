@@ -60,6 +60,30 @@ export function activate(context: vscode.ExtensionContext) {
     // This line of code will only be executed once when your extension is activated
     console.log('Congratulations, your extension "pull-requester" is now active!');
 
+    vscode.commands.registerCommand('extension.sendPullRequestReview', async () => {
+        const msgBody = await vscode.window.showInputBox({placeHolder: 'Enter your messsage:'})
+
+        const answer = await vscode.window.showQuickPick(['APPROVE', 'REQUEST_CHANGES', 'COMMENT'], { placeHolder: 'What is the status of the review?' })
+        const token = await getToken();
+
+        const body = {
+            "commit_id": store.currentPullRequest.head.sha,
+            "body": msgBody,
+            "event": answer,
+            "comments": []
+          };
+        const response = await fetch(
+            `${store.currentPullRequest.base.repo.url}/pulls/${store.currentPullRequest.number}/reviews?access_token=${token}`
+        , {method: 'post', 
+        body: JSON.stringify(body)})
+
+        if(response.ok) {
+            vscode.window.showInformationMessage('Your review submitted');
+        } else {
+            vscode.window.showErrorMessage('An error occurred');
+        }
+    });
+
     vscode.commands.registerCommand('extension.showDiff', async (filename) => {
 
         var setting1: vscode.Uri = vscode.Uri.parse("file:" + vscode.workspace.rootPath + '/' +filename);
@@ -68,8 +92,6 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.executeCommand('vscode.diff', setting1, setting2, filename)
 
     });
-
-
     vscode.commands.registerCommand('extension.selectPullRequest', async () => {
         await execute({cmd: 'touch /tmp/empty'})
         await execute({cmd: 'git fetch'})
@@ -127,9 +149,7 @@ export function activate(context: vscode.ExtensionContext) {
             position:line,
             body: c.body
         }})
-      
-
-
+    
         const token = await getToken();
 
         const body = {
