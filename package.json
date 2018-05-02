@@ -1,87 +1,92 @@
 {
-    "name": "pull-requester",
-    "displayName": "pull-requester",
-    "description": "",
-    "version": "0.0.1",
-    "publisher": "yossi-eynav",
-    "engines": {
-        "vscode": "^1.22.0"
+  "name": "pull-requester",
+  "displayName": "pull-requester",
+  "description": "",
+  "version": "0.0.1",
+  "publisher": "yossi-eynav",
+  "engines": {
+    "vscode": "^1.22.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:extension.sayHello",
+    "onCommand:extension.selectPullRequest",
+    "onCommand:extension.addToken"
+  ],
+  "main": "./out/extension",
+  "contributes": {
+    "views": {
+      "explorer": [
+        {
+          "id": "nodeDependencies",
+          "name": "Pull Request Files"
+        }
+      ]
     },
-    "categories": [
-        "Other"
+    "commands": [
+      {
+        "command": "extension.selectPullRequest",
+        "title": "Select Pull Request to work on"
+      },
+      {
+        "command": "extension.viewPull",
+        "title": "Open pull in browser"
+      },
+      {
+        "command": "extension.sayHello",
+        "title": "Hello World"
+      },
+      {
+        "command": "extension.addComment",
+        "title": "Add a comment"
+      },
+      {
+        "command": "extension.printAllComments",
+        "title": "Print all comments"
+      },
+      {
+        "command": "extension.deleteComment",
+        "title": "Delete a comment"
+      },
+      {
+        "command": "extension.submitComments",
+        "title": "Submit comments"
+      },
+      {
+        "command": "extension.addToken",
+        "title": "Add Github token"
+      },
+      {
+        "command": "extension.createPendingReview",
+        "title": "Create a pending review"
+      },
+      {
+        "command": "extension.sendPullRequestReview",
+        "title": "Send a review"
+      }
     ],
-    "activationEvents": [
-        "onCommand:extension.sayHello",
-        "onCommand:extension.selectPullRequest",
-        "onCommand:extension.addToken"
-    ],
-    "main": "./out/extension",
-    "contributes": {
-        "views": {
-            "explorer": [
-                {
-                    "id": "nodeDependencies",
-                    "name": "Pull Request Files"
-                }
-            ]
-        },
-        "commands": [
-            {
-                "command": "extension.selectPullRequest",
-                "title": "Select Pull Request to work on"
-            },
-            {
-                "command": "extension.sayHello",
-                "title": "Hello World"
-            },
-            {
-                "command": "extension.addComment",
-                "title": "Add a comment"
-            },
-            {
-                "command": "extension.printAllComments",
-                "title": "Print all comments"
-            },
-            {
-                "command": "extension.deleteComment",
-                "title": "Delete a comment"
-            },
-            {
-                "command": "extension.submitComments",
-                "title": "Submit comments"
-            },
-            {
-                "command": "extension.addToken",
-                "title": "Add Github token"
-            },
-            {
-                "command": "extension.createPendingReview",
-                "title": "Create a pending review"
-            },
-            {
-                "command": "extension.sendPullRequestReview",
-                "title": "Send a review"
-            } 
-        ],
-        "menues": {}
-    },
-    "scripts": {
-        "vscode:prepublish": "npm run compile",
-        "compile": "tsc -p ./",
-        "watch": "tsc -watch -p ./",
-        "postinstall": "node ./node_modules/vscode/bin/install",
-        "test": "npm run compile && node ./node_modules/vscode/bin/test"
-    },
-    "devDependencies": {
-        "typescript": "^2.6.1",
-        "vscode": "^1.1.6",
-        "tslint": "^5.8.0",
-        "@types/node": "^7.0.43",
-        "@types/mocha": "^2.2.42"
-    },
-    "dependencies": {
-        "fs-extra": "^5.0.0",
-        "hosted-git-info": "^2.6.0",
-        "node-fetch": "^2.1.2"
-    }
+    "menues": {}
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "npm run compile && node ./node_modules/vscode/bin/test"
+  },
+  "devDependencies": {
+    "typescript": "^2.6.1",
+    "vscode": "^1.1.6",
+    "tslint": "^5.8.0",
+    "@types/node": "^7.0.43",
+    "@types/mocha": "^2.2.42"
+  },
+  "dependencies": {
+    "fs-extra": "^5.0.0",
+    "hosted-git-info": "^2.6.0",
+    "node-fetch": "^2.1.2",
+    "parse-diff": "^0.4.2"
+  }
 }
