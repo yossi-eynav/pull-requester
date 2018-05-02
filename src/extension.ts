@@ -89,8 +89,11 @@ export function activate(context: vscode.ExtensionContext) {
     });
 
     vscode.commands.registerCommand('extension.showDiff', async (filename) => {
-        var setting1: vscode.Uri = vscode.Uri.parse("file:" + vscode.workspace.rootPath + '/' +filename);
-        var setting2: vscode.Uri = vscode.Uri.parse(`file:/tmp/${filename}`);
+        const originalFilePath = vscode.workspace.rootPath + '/' +filename;
+        var setting1: vscode.Uri = vscode.Uri.parse("file:" + originalFilePath);
+        const isExists = fs.pathExists(originalFilePath);
+
+        var setting2: vscode.Uri = isExists ? vscode.Uri.parse(`file:/tmp/${filename}`) : vscode.Uri.parse(`file:/tmp/blank`) ;
         vscode.commands.executeCommand('vscode.diff', setting1, setting2, filename)
     });
 
@@ -170,10 +173,12 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand('extension.addComment', async (...args) => {
 
         const editor = vscode.window.activeTextEditor;
+        
         let text: string;
 
         if (editor) {
             const commentBody = await vscode.window.showInputBox({prompt: 'Add your comment.'})
+            if(!commentBody) { return;  }
             let line = editor.selection.active.line;
             const lineText = editor.document.lineAt(line).text;
             const fileName = editor.document.uri.path.replace('/tmp/', '');
@@ -222,7 +227,6 @@ export function activate(context: vscode.ExtensionContext) {
         const token = await fs.readFile(context.storagePath+ '/token');
         return token.toString();
     }
-    context.subscriptions.push(disposable);
 }
 
 // this method is called when your extension is deactivated
