@@ -90,10 +90,10 @@ export function activate(context: vscode.ExtensionContext) {
 
     vscode.commands.registerCommand('extension.showDiff', async (filename) => {
         const originalFilePath = vscode.workspace.rootPath + '/' +filename;
-        var setting1: vscode.Uri = vscode.Uri.parse("file:" + originalFilePath);
-        const isExists = fs.pathExists(originalFilePath);
+        const isExists = await fs.pathExists(originalFilePath);
+        var setting1: vscode.Uri = isExists ? vscode.Uri.parse("file:" + originalFilePath): vscode.Uri.parse(`file:/private/tmp/blank`);
+        var setting2: vscode.Uri = vscode.Uri.parse(`file:/private/tmp/${filename}`)
 
-        var setting2: vscode.Uri = isExists ? vscode.Uri.parse(`file:/tmp/${filename}`) : vscode.Uri.parse(`file:/tmp/blank`) ;
         vscode.commands.executeCommand('vscode.diff', setting1, setting2, filename)
     });
 
@@ -102,7 +102,7 @@ export function activate(context: vscode.ExtensionContext) {
     });
 
     vscode.commands.registerCommand('extension.selectPullRequest', async () => {
-        await execute({cmd: 'touch /tmp/empty'});
+        await execute({cmd: 'touch /private/tmp/blank'});
         await execute({cmd: 'git fetch'});
         const token = await getToken();
         const origin = await execute({cmd: 'git remote get-url origin'})
@@ -134,7 +134,7 @@ export function activate(context: vscode.ExtensionContext) {
         async function saveFile(file) {
             const token = await getToken();
             const fileRequest = await fetch(file.contents_url + `&access_token=${token}`).then((r) => r.json()).then((r) => r.content)
-            await fs.outputFile(`/tmp/${file.filename}`, Buffer.from(fileRequest, 'base64'))
+            await fs.outputFile(`/private/tmp/${file.filename}`, Buffer.from(fileRequest, 'base64'))
         }
     //    vscode.TextEditor.act
 
@@ -173,7 +173,7 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand('extension.addComment', async (...args) => {
 
         const editor = vscode.window.activeTextEditor;
-        
+
         let text: string;
 
         if (editor) {
@@ -181,7 +181,7 @@ export function activate(context: vscode.ExtensionContext) {
             if(!commentBody) { return;  }
             let line = editor.selection.active.line;
             const lineText = editor.document.lineAt(line).text;
-            const fileName = editor.document.uri.path.replace('/tmp/', '');
+            const fileName = editor.document.uri.path.replace('/private/tmp/', '');
 
             // const fileIndex = store.pullRequestDiff.indexOf(fileName);
 
