@@ -202,7 +202,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     vscode.commands.registerCommand('extension.selectPullRequest', async () => {
         await execute({cmd: 'touch /tmp/empty'});
-        await execute({cmd: 'git stash all'});
+        await execute({cmd: 'git stash'});
         await execute({cmd: 'git fetch'});
         const token = await getToken();
         const origin = await execute({cmd: 'git remote get-url origin'})
