@@ -11,6 +11,9 @@ import * as fs from 'fs-extra';
 import { start } from 'repl';
 import { STATUS_CODES, get } from 'http';
 import * as diffParse from 'parse-diff';
+import * as chalk from 'chalk';
+import * as escape from 'escape-html';
+import * as hljs from 'highlight.js'; 
 
 const store = {
     currentPullRequest: {},
@@ -55,8 +58,103 @@ function toGitUri(uri: vscode.Uri, ref: string, options = {}): vscode.Uri {
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-    const pullsRequesterChannel = vscode.window.createOutputChannel('pull-requester')
 
+	let previewUri = vscode.Uri.parse('css-preview://authority/css-preview');
+
+	class TextDocumentContentProvider implements vscode.TextDocumentContentProvider {
+		private _onDidChange = new vscode.EventEmitter<vscode.Uri>();
+
+		public async provideTextDocumentContent(uri: vscode.Uri) {
+            const editor = vscode.window.activeTextEditor;
+            if (!editor) { return ''; }
+
+            const file = editor.document.uri.path.replace('/tmp/', '');
+            const token = await getToken();
+
+            const commentsRequests = await fetch(store.currentPullRequest.url + `/comments?access_token=${token}`)
+            const comments = await commentsRequests.json()
+            console.log(comments);
+            
+            return this.snippet(comments.filter(c => c.path === file));
+		}
+
+		get onDidChange(): vscode.Event<vscode.Uri> {
+			return this._onDidChange.event;
+		}
+
+		public update(uri: vscode.Uri) {
+			this._onDidChange.fire(uri);
+		}
+
+		private snippet(comments: any): string {
+            
+            return `
+            <head>
+                
+
+            </head>
+            <style>
+          
+           .body {
+                font-size: 16px;
+                line-height: 16px;
+                padding: 7px;
+                background-color: white;
+                margin-bottom: 10px;
+                color: black;
+           }
+
+           body {
+            background-color: white;
+            color: black;
+           }
+
+           .body span {
+                white-space: nowrap;
+           }
+
+           .item {
+               padding: 5px;
+               border: 1px solid rgba(0,0,0,0.2);
+               margin-bottom: 10px;
+           }
+				</style>
+                <body>
+                    ${comments.map(c => {
+                        let body = escape(c.diff_hunk).replace(/\+/gi, '').split('\n');
+                        body.shift();
+                        body = body.map((l, i) => `${i+1}. ${l}`).join('\n');
+
+                        return `<div class="item">
+                            <pre><code> 
+                                ${ body }
+                            </code></pre>
+                            <p class="body">
+                                Line ${c.original_position} - 
+                                <span>${escape(c.body)}</span> by @${c.user.login}
+                            </p>
+                        </div>`;
+                    })}
+                   
+                </body>`;
+		}
+    }
+    let provider = new TextDocumentContentProvider();
+    let registration = vscode.workspace.registerTextDocumentContentProvider('css-preview', provider);
+
+    let disposable = vscode.commands.registerCommand('extension.readComments', () => {
+		return vscode.commands.executeCommand('vscode.previewHtml', previewUri, vscode.ViewColumn.Two, 'Comments').then((success) => {
+		}, (reason) => {
+			vscode.window.showErrorMessage(reason);
+		});
+    });
+    
+    context.subscriptions.push(registration);
+
+
+    const pullsRequesterChannel = vscode.window.createOutputChannel('pull-requester')
+   
+    //
     // Use the console to output diagnostic information (console.log) and errors (console.error)
     // This line of code will only be executed once when your extension is activated
     console.log('Congratulations, your extension "pull-requester" is now active!');
@@ -91,8 +189,9 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand('extension.showDiff', async (filename) => {
         const originalFilePath = vscode.workspace.rootPath + '/' +filename;
         const isExists = await fs.pathExists(originalFilePath);
-        var setting1: vscode.Uri = isExists ? vscode.Uri.parse("file:" + originalFilePath): vscode.Uri.parse(`file:/private/tmp/blank`);
-        var setting2: vscode.Uri = vscode.Uri.parse(`file:/private/tmp/${filename}`)
+
+        var setting1: vscode.Uri = isExists ? vscode.Uri.parse("file:" + originalFilePath) :  vscode.Uri.parse(`file:/tmp/empty`);
+        var setting2: vscode.Uri = vscode.Uri.parse(`file:/tmp/${filename}`);
 
         vscode.commands.executeCommand('vscode.diff', setting1, setting2, filename)
     });
@@ -102,7 +201,8 @@ export function activate(context: vscode.ExtensionContext) {
     });
 
     vscode.commands.registerCommand('extension.selectPullRequest', async () => {
-        await execute({cmd: 'touch /private/tmp/blank'});
+        await execute({cmd: 'touch /tmp/empty'});
+        await execute({cmd: 'git stash all'});
         await execute({cmd: 'git fetch'});
         const token = await getToken();
         const origin = await execute({cmd: 'git remote get-url origin'})
@@ -116,6 +216,7 @@ export function activate(context: vscode.ExtensionContext) {
         store.currentPullRequest = pulls[chosenPullIndex];
         await execute({cmd: `git checkout ${pulls[chosenPullIndex].base.sha}`})
         pullsRequesterChannel.appendLine(`a PR has been selected -> ${pulls[chosenPullIndex].name}`)
+
 
         const pullsRequestDiffRequest = await fetch(`https://api.github.com/repos/${info.user}/${info.project}/pulls/${pulls[chosenPullIndex].number}?access_token=${token}`,{headers: {
             'accept': 'application/vnd.github.v3.diff'
@@ -134,7 +235,7 @@ export function activate(context: vscode.ExtensionContext) {
         async function saveFile(file) {
             const token = await getToken();
             const fileRequest = await fetch(file.contents_url + `&access_token=${token}`).then((r) => r.json()).then((r) => r.content)
-            await fs.outputFile(`/private/tmp/${file.filename}`, Buffer.from(fileRequest, 'base64'))
+            await fs.outputFile(`/tmp/${file.filename}`, Buffer.from(fileRequest, 'base64'))
         }
     //    vscode.TextEditor.act
 
@@ -165,7 +266,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     vscode.commands.registerCommand('extension.addToken', async () => {
         const token = await vscode.window.showInputBox({password: true, prompt: 'Enter a valid github token:'})
-        await fs.outputFile(`${context.storagePath}/token`, token);
+        await fs.outputFile(`${process.env.HOME}/.githubtoken`, token);
 
         vscode.window.showInformationMessage('Github token has been saved.');
     });
@@ -173,7 +274,7 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand('extension.addComment', async (...args) => {
 
         const editor = vscode.window.activeTextEditor;
-
+        
         let text: string;
 
         if (editor) {
@@ -181,7 +282,7 @@ export function activate(context: vscode.ExtensionContext) {
             if(!commentBody) { return;  }
             let line = editor.selection.active.line;
             const lineText = editor.document.lineAt(line).text;
-            const fileName = editor.document.uri.path.replace('/private/tmp/', '');
+            const fileName = editor.document.uri.path.replace('/tmp/', '');
 
             // const fileIndex = store.pullRequestDiff.indexOf(fileName);
 
@@ -224,7 +325,7 @@ export function activate(context: vscode.ExtensionContext) {
     });
 
     async function getToken() {
-        const token = await fs.readFile(context.storagePath+ '/token');
+        const token = await fs.readFile(`${process.env.HOME}/.githubtoken`);
         return token.toString();
     }
 }

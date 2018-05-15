@@ -31,6 +31,10 @@
         "title": "Select Pull Request to work on"
       },
       {
+        "command": "extension.readComments",
+        "title": "[PULL-REQUESTER] - Read all comments"
+      },
+      {
         "command": "extension.viewPull",
         "title": "Open pull in browser"
       },
@@ -84,7 +88,10 @@
     "@types/mocha": "^2.2.42"
   },
   "dependencies": {
+    "chalk": "^2.4.1",
+    "escape-html": "^1.0.3",
     "fs-extra": "^5.0.0",
+    "highlight.js": "^9.12.0",
     "hosted-git-info": "^2.6.0",
     "node-fetch": "^2.1.2",
     "parse-diff": "^0.4.2"
