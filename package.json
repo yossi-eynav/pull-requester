@@ -1,7 +1,7 @@
 {
   "name": "pull-requester",
   "displayName": "pull-requester",
-  "description": "",
+  "description": "This extenstion allows you to review github pull requests within vscode",
   "version": "0.0.1",
   "publisher": "yossi-eynav",
   "engines": {
@@ -11,7 +11,6 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:extension.sayHello",
     "onCommand:extension.selectPullRequest",
     "onCommand:extension.addToken"
   ],
@@ -28,50 +27,29 @@
     "commands": [
       {
         "command": "extension.selectPullRequest",
-        "title": "Select Pull Request to work on"
+        "title": "pullRequester - Select Pull Request to work on"
       },
       {
         "command": "extension.readComments",
-        "title": "[PULL-REQUESTER] - Read all comments"
+        "title": "pullRequester - Read all comments"
       },
       {
         "command": "extension.viewPull",
-        "title": "Open pull in browser"
-      },
-      {
-        "command": "extension.sayHello",
-        "title": "Hello World"
+        "title": "pullRequester -Open pull in browser"
       },
       {
         "command": "extension.addComment",
-        "title": "Add a comment"
-      },
-      {
-        "command": "extension.printAllComments",
-        "title": "Print all comments"
-      },
-      {
-        "command": "extension.deleteComment",
-        "title": "Delete a comment"
-      },
-      {
-        "command": "extension.submitComments",
-        "title": "Submit comments"
+        "title": "pullRequester - Add a comment"
       },
       {
         "command": "extension.addToken",
-        "title": "Add Github token"
-      },
-      {
-        "command": "extension.createPendingReview",
-        "title": "Create a pending review"
+        "title": "pullRequester - Add Github token"
       },
       {
         "command": "extension.sendPullRequestReview",
-        "title": "Send a review"
+        "title": "pullRequester - Send a review"
       }
-    ],
-    "menues": {}
+    ]
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
