@@ -8,8 +8,6 @@ export async function addPullRequestComment() {
     
     const editor = vscode.window.activeTextEditor;
         
-    let text: string;
-
     if (editor) {
         const commentBody = await vscode.window.showInputBox({prompt: 'Add your comment.'})
         if(!commentBody) { return;  }
@@ -22,7 +20,7 @@ export async function addPullRequestComment() {
         const files = diffParse(store.pullRequestDiff);
         const file = files[files.findIndex(f => f.to === fileName)];
 
-        const lines = [];
+        const lines: Array<any> = [];
         file.chunks.forEach(function({changes}) {
             changes.forEach(change => {
                 lines.push(change.content);

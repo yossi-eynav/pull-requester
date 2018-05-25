@@ -1,6 +1,4 @@
 import * as vscode from 'vscode';
-import { store } from '../store';
-import fetch from 'node-fetch';
 import * as fs from 'fs-extra';
 
 export async function addGithubToken() {

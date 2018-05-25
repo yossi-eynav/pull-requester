@@ -15,9 +15,9 @@ export async function selectPullRequest() {
     const info = hostedGitInfo.fromUrl(origin, {noGitPlus: true})
     const pullsRequest = await fetch(`https://api.github.com/repos/${info.user}/${info.project}/pulls?access_token=${token}`)
     const pulls = await pullsRequest.json()
-    const options = pulls.map(pull => `[${pull.id}] - ${pull.title} by @${pull.user.login}`)
+    const options = pulls.map((pull: any) => `[${pull.id}] - ${pull.title} by @${pull.user.login}`)
     const result = await vscode.window.showQuickPick(options);
-    const chosenPullIndex = options.findIndex((option) => option === result)
+    const chosenPullIndex = options.findIndex((option: string) => option === result)
     if(chosenPullIndex === -1) { return; }
     
     return await vscode.window.withProgress({
@@ -59,7 +59,7 @@ export async function selectPullRequest() {
 
         return Promise.resolve(pullsFiles);
 
-        async function saveFile(file) {
+        async function saveFile(file: any) {
             const token = store.githubToken
             const fileRequest = await fetch(file.contents_url + `&access_token=${token}`).then((r) => r.json()).then((r) => r.content)
             await fs.outputFile(`/tmp/${file.filename}`, Buffer.from(fileRequest, 'base64'))
