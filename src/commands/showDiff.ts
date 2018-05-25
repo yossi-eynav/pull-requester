@@ -1,5 +1,4 @@
 import * as vscode from 'vscode';
-import fetch from 'node-fetch';
 import * as fs from 'fs-extra';
 
 export async function showDiff(filename: string) {

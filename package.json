@@ -51,6 +51,9 @@
       }
     ]
   },
+  "repository": {
+    "url": "https://github.com/yossi-eynav/pull-requester"
+  },
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",

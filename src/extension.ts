@@ -2,10 +2,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import { exec } from 'child_process';
 import { DepNodeProvider } from './filesList';
-import * as hostedGitInfo from 'hosted-git-info'
-import fetch from 'node-fetch'
 import * as fs from 'fs-extra';
 import {store} from './store';
 import { sendReview } from './commands/sendReview';
