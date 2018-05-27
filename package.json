@@ -11,8 +11,8 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:pull-requester.selectPullRequest",
-    "onCommand:pull-requester.addToken"
+    "onCommand:pullRequester.selectPullRequest",
+    "onCommand:pullRequester.addToken"
   ],
   "main": "./out/extension",
   "contributes": {
@@ -26,27 +26,27 @@
     },
     "commands": [
       {
-        "command": "pull-requester.selectPullRequest",
+        "command": "pullRequester.selectPullRequest",
         "title": "pullRequester - Select Pull Request to work on"
       },
       {
-        "command": "pull-requester.readComments",
+        "command": "pullRequester.readComments",
         "title": "pullRequester - Read all comments"
       },
       {
-        "command": "pull-requester.viewPull",
+        "command": "pullRequester.viewPull",
         "title": "pullRequester -Open pull in browser"
       },
       {
-        "command": "pull-requester.addComment",
+        "command": "pullRequester.addComment",
         "title": "pullRequester - Add a comment"
       },
       {
-        "command": "pull-requester.addToken",
+        "command": "pullRequester.addToken",
         "title": "pullRequester - Add Github token"
       },
       {
-        "command": "pull-requester.sendPullRequestReview",
+        "command": "pullRequester.sendPullRequestReview",
         "title": "pullRequester - Send a review"
       }
     ]
