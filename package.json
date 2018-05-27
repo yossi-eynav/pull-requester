@@ -2,7 +2,7 @@
   "name": "pull-requester",
   "displayName": "pull-requester",
   "description": "This extenstion allows you to review github pull requests within vscode",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "publisher": "yossi-eynav",
   "engines": {
     "vscode": "^1.22.0"
@@ -11,8 +11,8 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:extension.selectPullRequest",
-    "onCommand:extension.addToken"
+    "onCommand:pullRequester.selectPullRequest",
+    "onCommand:pullRequester.addToken"
   ],
   "main": "./out/extension",
   "contributes": {
@@ -26,28 +26,34 @@
     },
     "commands": [
       {
-        "command": "extension.selectPullRequest",
-        "title": "pullRequester - Select Pull Request to work on"
+        "command": "pullRequester.selectPullRequest",
+        "category": "pullRequester",
+        "title": "Select Pull Request to work on"
       },
       {
-        "command": "extension.readComments",
-        "title": "pullRequester - Read all comments"
+        "command": "pullRequester.readComments",
+        "category": "pullRequester",
+        "title": "View all comments"
       },
       {
-        "command": "extension.viewPull",
-        "title": "pullRequester -Open pull in browser"
+        "command": "pullRequester.viewPull",
+        "category": "pullRequester",
+        "title": "Open pull request in browser"
       },
       {
-        "command": "extension.addComment",
-        "title": "pullRequester - Add a comment"
+        "command": "pullRequester.addComment",
+        "category": "pullRequester",
+        "title": "Add a comment"
       },
       {
-        "command": "extension.addToken",
-        "title": "pullRequester - Add Github token"
+        "command": "pullRequester.addToken",
+        "category": "pullRequester",
+        "title": "Add Github token"
       },
       {
-        "command": "extension.sendPullRequestReview",
-        "title": "pullRequester - Send a review"
+        "command": "pullRequester.sendPullRequestReview",
+        "category": "pullRequester",
+        "title": "Send a review"
       }
     ]
   },

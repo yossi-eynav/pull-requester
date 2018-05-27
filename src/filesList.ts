@@ -16,7 +16,7 @@ export class DepNodeProvider implements vscode.TreeDataProvider<File> {
 	readonly onDidChangeTreeData: vscode.Event<File | undefined> = this._onDidChangeTreeData.event;
 
 	constructor(files: any){
-		this.files = files.map(f => new File(f.filename,  {command: 'extension.showDiff', title: 'Show Diff', arguments: [f.filename]}))
+		this.files = files.map(f => new File(f.filename,  {command: 'pullRequester.showDiff', title: 'Show Diff', arguments: [f.filename]}))
 	}
 
 	refresh(): void {

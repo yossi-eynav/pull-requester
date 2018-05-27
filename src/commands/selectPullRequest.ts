@@ -8,8 +8,7 @@ import * as hostedGitInfo from 'hosted-git-info'
 export async function selectPullRequest() {
     const token = store.githubToken;
     if(!token) {
-        vscode.window.showErrorMessage('You must insert github token before running this command');
-        return;
+        throw new Error('You must insert github token before running this command')
     }
     const origin = await execute({cmd: 'git remote get-url origin'})
     const info = hostedGitInfo.fromUrl(origin, {noGitPlus: true})
@@ -26,11 +25,13 @@ export async function selectPullRequest() {
         cancellable: false
     }, async (progress, _) => {
         await execute({cmd: 'touch /tmp/empty'});
-        progress.report({ increment: 0, message: "git stash" });
-        await execute({cmd: 'git stash'});
 
         progress.report({ increment: 0, message: "git fetch" });
-        await execute({cmd: 'git fetch'});
+        try {
+            await execute({cmd: 'git fetch'});
+        }catch(e) {
+            throw new Error(e.message);
+        }
 
         store.currentPullRequest = pulls[chosenPullIndex];
 
@@ -41,20 +42,26 @@ export async function selectPullRequest() {
         const pullsRequestDiffRequest = await fetch(`https://api.github.com/repos/${info.user}/${info.project}/pulls/${pulls[chosenPullIndex].number}?access_token=${token}`,{headers: {
             'accept': 'application/vnd.github.v3.diff'
         }})
-        store.pullRequestDiff = await pullsRequestDiffRequest.text()
+        store.pullRequestDiff = await pullsRequestDiffRequest.text();
 
         progress.report({ increment: 20, message: `fetching from github.com the pull request's files` });
         const pullsFilesRequest = await fetch(`https://api.github.com/repos/${info.user}/${info.project}/pulls/${pulls[chosenPullIndex].number}/files?access_token=${token}`)
         if(!pullsFilesRequest.ok) {  
-            return Promise.reject(null);
+            throw new Error('Couldn\'t fetch files')
         }
-        const pullsFiles = await pullsFilesRequest.json()
-        
-        
+
+        let pullsFiles = await pullsFilesRequest.json();
+        pullsFiles = pullsFiles.filter((file) => !file.filename.match(/\.(jpg|jpeg|mp4|gif|png)/gi));
+        console.info('pull request files:', pullsFiles);
+
         let fileIndex = 1;
         for(let file of pullsFiles){
-            progress.report({ increment: (80 / pullsFiles.length) * ++fileIndex , message: `downloading ${file.filename}...` });
-            await saveFile(file);
+            progress.report({ increment: (80 / pullsFiles.length) * fileIndex++ , message: `downloading ${file.filename}...` });
+            try {
+                await saveFile(file);
+            } catch(e) {
+                vscode.window.showErrorMessage(`Couldn't fetch ${file.filename}`);
+            }
         }
 
         return Promise.resolve(pullsFiles);
