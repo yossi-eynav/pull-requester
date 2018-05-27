@@ -55,6 +55,17 @@
         "category": "pullRequester",
         "title": "Send a review"
       }
+    ],
+    "configuration":[
+      {
+        "title": "pullRequester configuration",
+        "properties": {
+          "pullRequester.githubToken": {
+            "type": "string",
+            "description": "GitHub token"
+          }
+        }
+      }
     ]
   },
   "repository": {
