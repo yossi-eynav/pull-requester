@@ -22,18 +22,18 @@ export async function activate(context: vscode.ExtensionContext) {
 
     const registration = vscode.workspace.registerTextDocumentContentProvider('css-preview', provider);
     context.subscriptions.push(registration);
-    vscode.commands.registerCommand('extension.readComments', readAllFileComments);
+    vscode.commands.registerCommand('pull-requester.readComments', readAllFileComments);
 
-    vscode.commands.registerCommand('extension.sendPullRequestReview', sendReview);
-    vscode.commands.registerCommand('extension.showDiff', showDiff);
-    vscode.commands.registerCommand('extension.viewPull', viewPullInBrowser);
-    vscode.commands.registerCommand('extension.selectPullRequest', async () => {
+    vscode.commands.registerCommand('pull-requester.sendPullRequestReview', sendReview);
+    vscode.commands.registerCommand('pull-requester.showDiff', showDiff);
+    vscode.commands.registerCommand('pull-requester.viewPull', viewPullInBrowser);
+    vscode.commands.registerCommand('pull-requester.selectPullRequest', async () => {
        const pullsFiles = await selectPullRequest();
        vscode.window.registerTreeDataProvider('nodeDependencies', new DepNodeProvider(pullsFiles));
     })
 
-    vscode.commands.registerCommand('extension.addToken', addGithubToken);
-    vscode.commands.registerCommand('extension.addComment', addPullRequestComment);
+    vscode.commands.registerCommand('pull-requester.addToken', addGithubToken);
+    vscode.commands.registerCommand('pull-requester.addComment', addPullRequestComment);
 }
 
 // this method is called when your extension is deactivated
