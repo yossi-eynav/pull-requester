@@ -17,12 +17,17 @@ import { provider } from './providers/commentsReviewer';
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export async function activate(context: vscode.ExtensionContext) {
-    const token = await fs.readFile(`${process.env.HOME}/.githubtoken`);
-    store.githubToken = token.toString();
-
+    try {
+        const token = await fs.readFile(`${process.env.HOME}/.githubtoken`);
+        store.githubToken = token.toString();
+    } catch(e){
+        console.error(e);
+    }
+  
     const registration = vscode.workspace.registerTextDocumentContentProvider('css-preview', provider);
     context.subscriptions.push(registration);
     vscode.commands.registerCommand('pullRequester.readComments', readAllFileComments);
+<<<<<<< HEAD
 
     vscode.commands.registerCommand('pullRequester.sendPullRequestReview', sendReview);
     vscode.commands.registerCommand('pullRequester.showDiff', showDiff);
@@ -30,6 +35,20 @@ export async function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand('pullRequester.selectPullRequest', async () => {
        const pullsFiles = await selectPullRequest();
        vscode.window.registerTreeDataProvider('nodeDependencies', new DepNodeProvider(pullsFiles));
+=======
+
+    vscode.commands.registerCommand('pullRequester.sendPullRequestReview', sendReview);
+    vscode.commands.registerCommand('pullRequester.showDiff', showDiff);
+    vscode.commands.registerCommand('pullRequester.viewPull', viewPullInBrowser);
+    vscode.commands.registerCommand('pullRequester.selectPullRequest', async () => {
+        try {
+            const pullsFiles = await selectPullRequest();
+            vscode.window.registerTreeDataProvider('nodeDependencies', new DepNodeProvider(pullsFiles));
+        } catch(e) {
+            vscode.window.showErrorMessage(e.message);
+        }
+
+>>>>>>> yossi/master
     })
 
     vscode.commands.registerCommand('pullRequester.addToken', addGithubToken);

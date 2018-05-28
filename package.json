@@ -1,8 +1,8 @@
 {
   "name": "pull-requester",
   "displayName": "pull-requester",
-  "description": "This extenstion allows you to review github pull requests within vscode",
-  "version": "0.0.1",
+  "description": "This extension allows you to review github pull requests within vscode",
+  "version": "0.0.3",
   "publisher": "yossi-eynav",
   "engines": {
     "vscode": "^1.22.0"
@@ -27,27 +27,33 @@
     "commands": [
       {
         "command": "pullRequester.selectPullRequest",
-        "title": "pullRequester - Select Pull Request to work on"
+        "category": "pullRequester",
+        "title": "Select Pull Request to work on"
       },
       {
         "command": "pullRequester.readComments",
-        "title": "pullRequester - Read all comments"
+        "category": "pullRequester",
+        "title": "View all comments"
       },
       {
         "command": "pullRequester.viewPull",
-        "title": "pullRequester -Open pull in browser"
+        "category": "pullRequester",
+        "title": "Open pull request in browser"
       },
       {
         "command": "pullRequester.addComment",
-        "title": "pullRequester - Add a comment"
+        "category": "pullRequester",
+        "title": "Add a comment"
       },
       {
         "command": "pullRequester.addToken",
-        "title": "pullRequester - Add Github token"
+        "category": "pullRequester",
+        "title": "Add Github token"
       },
       {
         "command": "pullRequester.sendPullRequestReview",
-        "title": "pullRequester - Send a review"
+        "category": "pullRequester",
+        "title": "Send a review"
       }
     ]
   },
