@@ -1,7 +1,7 @@
 {
   "name": "pull-requester",
   "displayName": "pull-requester",
-  "description": "This extenstion allows you to review github pull requests within vscode",
+  "description": "This extension allows you to review github pull requests within vscode",
   "version": "0.0.3",
   "publisher": "yossi-eynav",
   "engines": {
