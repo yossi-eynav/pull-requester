@@ -13,6 +13,7 @@ import { addGithubToken } from './commands/addGithubToken';
 import { addPullRequestComment } from './commands/addPullRequestComment';
 import { readAllFileComments } from './commands/readAllFileComment';
 import { provider } from './providers/commentsReviewer';
+import { StatusBar } from './statusBar';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -23,7 +24,7 @@ export async function activate(context: vscode.ExtensionContext) {
     } catch(e){
         console.error(e);
     }
-  
+    
     const registration = vscode.workspace.registerTextDocumentContentProvider('css-preview', provider);
     context.subscriptions.push(registration);
     vscode.commands.registerCommand('pullRequester.readComments', readAllFileComments);
@@ -43,6 +44,13 @@ export async function activate(context: vscode.ExtensionContext) {
 
     vscode.commands.registerCommand('pullRequester.addToken', addGithubToken);
     vscode.commands.registerCommand('pullRequester.addComment', addPullRequestComment);
+
+    // create a new word counter
+    const statusBar = new StatusBar();
+
+    // add to a list of disposables which are disposed when this extension
+    // is deactivated again.
+    context.subscriptions.push(statusBar);
 }
 
 // this method is called when your extension is deactivated

@@ -15,7 +15,6 @@ export class TextDocumentContentProvider implements vscode.TextDocumentContentPr
 
         const commentsRequests = await fetch(store.currentPullRequest.url + `/comments?access_token=${token}`)
         const comments = await commentsRequests.json()
-        console.log(comments);
         
         return this.snippet(comments.filter(c => c.path === file));
     }
