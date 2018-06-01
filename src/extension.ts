@@ -3,7 +3,6 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import { DepNodeProvider } from './filesList';
-import * as fs from 'fs-extra';
 import {store} from './store';
 import { sendReview } from './commands/sendReview';
 import { showDiff } from './commands/showDiff';
