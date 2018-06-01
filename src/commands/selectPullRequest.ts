@@ -33,19 +33,20 @@ export async function selectPullRequest() {
             throw new Error(e.message);
         }
 
-        store.currentPullRequest = pulls[chosenPullIndex];
+        const selectedPull = pulls[chosenPullIndex];
+        store.currentPullRequest = selectedPull;
 
-        progress.report({ increment: 0, message: `git checkout ${pulls[chosenPullIndex].base.sha}` });
-        await execute({cmd: `git checkout ${pulls[chosenPullIndex].base.sha}`})
+        progress.report({ increment: 0, message: `git checkout ${selectedPull.base.sha}` });
+        await execute({cmd: `git checkout ${selectedPull.base.sha}`})
 
         progress.report({ increment: 10, message: `fetching from github.com the git patch` });
-        const pullsRequestDiffRequest = await fetch(`https://api.github.com/repos/${info.user}/${info.project}/pulls/${pulls[chosenPullIndex].number}?access_token=${token}`,{headers: {
+        const pullsRequestDiffRequest = await fetch(`https://api.github.com/repos/${info.user}/${info.project}/pulls/${selectedPull.number}?access_token=${token}`,{headers: {
             'accept': 'application/vnd.github.v3.diff'
         }})
         store.pullRequestDiff = await pullsRequestDiffRequest.text();
 
         progress.report({ increment: 20, message: `fetching from github.com the pull request's files` });
-        const pullsFilesRequest = await fetch(`https://api.github.com/repos/${info.user}/${info.project}/pulls/${pulls[chosenPullIndex].number}/files?access_token=${token}`)
+        const pullsFilesRequest = await fetch(`https://api.github.com/repos/${info.user}/${info.project}/pulls/${selectedPull.number}/files?access_token=${token}`)
         if(!pullsFilesRequest.ok) {  
             throw new Error('Couldn\'t fetch files')
         }
@@ -64,6 +65,7 @@ export async function selectPullRequest() {
             }
         }
 
+        vscode.window.setStatusBarMessage("Review in progress: " + `${selectedPull.title} by @${selectedPull.user.login}`, 60000);
         return Promise.resolve(pullsFiles);
 
         async function saveFile(file: any) {
