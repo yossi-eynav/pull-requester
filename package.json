@@ -2,7 +2,7 @@
   "name": "pull-requester",
   "displayName": "pull-requester",
   "description": "This extension allows you to review github pull requests within vscode",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "publisher": "yossi-eynav",
   "engines": {
     "vscode": "^1.22.0"
@@ -54,6 +54,17 @@
         "command": "pullRequester.sendPullRequestReview",
         "category": "pullRequester",
         "title": "Send a review"
+      }
+    ],
+    "configuration":[
+      {
+        "title": "pullRequester configuration",
+        "properties": {
+          "pullRequester.githubToken": {
+            "type": "string",
+            "description": "GitHub token"
+          }
+        }
       }
     ]
   },

@@ -19,8 +19,8 @@ import { StatusBar } from './statusBar';
 // your extension is activated the very first time the command is executed
 export async function activate(context: vscode.ExtensionContext) {
     try {
-        const token = await fs.readFile(`${process.env.HOME}/.githubtoken`);
-        store.githubToken = token.toString();
+        const token = vscode.workspace.getConfiguration("pullRequester").get("githubToken") as string;
+        store.githubToken = token;
     } catch(e){
         console.error(e);
     }
