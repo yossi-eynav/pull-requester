@@ -19,7 +19,7 @@
     "views": {
       "explorer": [
         {
-          "id": "nodeDependencies",
+          "id": "pullRequesterFiles",
           "name": "Pull Request Files"
         }
       ]

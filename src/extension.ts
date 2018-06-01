@@ -34,7 +34,7 @@ export async function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand('pullRequester.selectPullRequest', async () => {
         try {
             const pullsFiles = await selectPullRequest();
-            vscode.window.registerTreeDataProvider('nodeDependencies', new DepNodeProvider(pullsFiles));
+            vscode.window.registerTreeDataProvider('pullRequesterFiles', new DepNodeProvider(pullsFiles));
         } catch(e) {
             vscode.window.showErrorMessage(e.message);
         }
