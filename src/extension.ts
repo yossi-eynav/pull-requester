@@ -12,12 +12,13 @@ import { addGithubToken } from './commands/addGithubToken';
 import { addPullRequestComment } from './commands/addPullRequestComment';
 import { readAllFileComments } from './commands/readAllFileComment';
 import { provider } from './providers/commentsReviewer';
+import { StatusBar } from './statusBar';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export async function activate(context: vscode.ExtensionContext) {
     const token = vscode.workspace.getConfiguration("pullRequester").get("githubToken") as string;
-    store.githubToken = token.toString();
+    store.githubToken = token;
 
     const registration = vscode.workspace.registerTextDocumentContentProvider('css-preview', provider);
     context.subscriptions.push(registration);
@@ -29,7 +30,7 @@ export async function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand('pullRequester.selectPullRequest', async () => {
         try {
             const pullsFiles = await selectPullRequest();
-            vscode.window.registerTreeDataProvider('nodeDependencies', new DepNodeProvider(pullsFiles));
+            vscode.window.registerTreeDataProvider('pullRequesterFiles', new DepNodeProvider(pullsFiles));
         } catch(e) {
             vscode.window.showErrorMessage(e.message);
         }
@@ -37,6 +38,13 @@ export async function activate(context: vscode.ExtensionContext) {
 
     vscode.commands.registerCommand('pullRequester.addToken', addGithubToken);
     vscode.commands.registerCommand('pullRequester.addComment', addPullRequestComment);
+
+    // create a new word counter
+    const statusBar = new StatusBar();
+
+    // add to a list of disposables which are disposed when this extension
+    // is deactivated again.
+    context.subscriptions.push(statusBar);
 }
 
 // this method is called when your extension is deactivated
