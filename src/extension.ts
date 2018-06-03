@@ -17,13 +17,9 @@ import { StatusBar } from './statusBar';
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export async function activate(context: vscode.ExtensionContext) {
-    try {
-        const token = vscode.workspace.getConfiguration("pullRequester").get("githubToken") as string;
-        store.githubToken = token;
-    } catch(e){
-        console.error(e);
-    }
-    
+    const token = vscode.workspace.getConfiguration("pullRequester").get("githubToken") as string;
+    store.githubToken = token;
+
     const registration = vscode.workspace.registerTextDocumentContentProvider('css-preview', provider);
     context.subscriptions.push(registration);
     vscode.commands.registerCommand('pullRequester.readComments', readAllFileComments);
@@ -38,8 +34,7 @@ export async function activate(context: vscode.ExtensionContext) {
         } catch(e) {
             vscode.window.showErrorMessage(e.message);
         }
-
-    })
+    });
 
     vscode.commands.registerCommand('pullRequester.addToken', addGithubToken);
     vscode.commands.registerCommand('pullRequester.addComment', addPullRequestComment);
