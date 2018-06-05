@@ -53,7 +53,6 @@ export async function selectPullRequest() {
 
         let pullsFiles = await pullsFilesRequest.json();
         pullsFiles = pullsFiles.filter((file) => !file.filename.match(/\.(jpg|jpeg|mp4|gif|png)/gi));
-        console.info('pull request files:', pullsFiles);
 
         let fileIndex = 1;
         for(let file of pullsFiles){
@@ -69,7 +68,7 @@ export async function selectPullRequest() {
         return Promise.resolve(pullsFiles);
 
         async function saveFile(file: any) {
-            const token = store.githubToken
+            const token = store.githubToken;
             const fileRequest = await fetch(file.contents_url + `&access_token=${token}`).then((r) => r.json()).then((r) => r.content)
             await fs.outputFile(`/tmp/${file.filename}`, Buffer.from(fileRequest, 'base64'))
         }

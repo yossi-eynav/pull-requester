@@ -14,14 +14,12 @@ export async function addPullRequestComment() {
         let line = editor.selection.active.line;
         const lineText = editor.document.lineAt(line).text;
         const fileName = editor.document.uri.path.replace('/tmp/', '');
-
-        // const fileIndex = store.pullRequestDiff.indexOf(fileName);
-
         const files = diffParse(store.pullRequestDiff);
         const file = files[files.findIndex(f => f.to === fileName)];
 
         const lines: Array<any> = [];
-        file.chunks.forEach(function({changes}) {
+        file.chunks.forEach(function({changes, content}) {
+            lines.push(content)
             changes.forEach(change => {
                 lines.push(change.content);
             });
@@ -32,7 +30,7 @@ export async function addPullRequestComment() {
         let lineNumber;
         for (let i = 0; i< lines.length; i++) {
             if(lines[i].includes(lineText)) {
-                lineNumber =  i + 1;
+                lineNumber =  i;
             }
         }
 
