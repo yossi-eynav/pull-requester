@@ -3,7 +3,7 @@
   "displayName": "pull-requester",
   "description": "This extension allows you to review github pull requests within vscode",
   "icon": "resources/icon.png",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "yossi-eynav",
   "engines": {
     "vscode": "^1.22.0"
@@ -55,9 +55,24 @@
         "command": "pullRequester.sendPullRequestReview",
         "category": "pullRequester",
         "title": "Send a review"
+      },
+      {
+        "command": "pullRequester.reset",
+        "category": "pullRequester",
+        "title": "Reset"
+      },
+      {
+        "command": "pullRequester.localBranchAsRemote",
+        "category": "pullRequester",
+        "title": "Set local branch as the PR's head"
+      },
+      {
+        "command": "pullRequester.localBranchAsBase",
+        "category": "pullRequester",
+        "title": "Set local branch as the PR's base"
       }
     ],
-    "configuration":[
+    "configuration": [
       {
         "title": "pullRequester configuration",
         "properties": {
@@ -97,6 +112,7 @@
     "hosted-git-info": "^2.6.0",
     "lodash": "^4.17.10",
     "node-fetch": "^2.1.2",
-    "parse-diff": "^0.4.2"
+    "parse-diff": "^0.4.2",
+    "url-parse": "^1.4.1"
   }
 }

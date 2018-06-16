@@ -9,7 +9,7 @@ export async function sendReview() {
         return;
     }
 
-    const msgBody = await vscode.window.showInputBox({placeHolder: 'Enter your messsage:'})
+    const msgBody = await vscode.window.showInputBox({placeHolder: 'Enter your message:'});
     if(!msgBody) { return; }
 
     const answer = await vscode.window.showQuickPick(['APPROVE', 'REQUEST_CHANGES', 'COMMENT'], { placeHolder: 'What is the status of the review?' })

@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { store } from './store';
 
 class File extends vscode.TreeItem {
 	constructor(
@@ -10,15 +11,10 @@ class File extends vscode.TreeItem {
 }
 
 // taken from https://github.com/Microsoft/vscode-extension-samples/blob/master/tree-view-sample/src/nodeDependencies.ts
-export class DepNodeProvider implements vscode.TreeDataProvider<File> {
-	private files = [];
+export class PrFileProvider implements vscode.TreeDataProvider<File> {
 	private _onDidChangeTreeData: vscode.EventEmitter<File | undefined> = new vscode.EventEmitter<File | undefined>();
 	readonly onDidChangeTreeData: vscode.Event<File | undefined> = this._onDidChangeTreeData.event;
 
-	constructor(files: any){
-		this.files = files.map(f => new File(f.filename,  {command: 'pullRequester.showDiff', title: 'Show Diff', arguments: [f.filename]}))
-	}
- 
 	refresh(): void {
 		this._onDidChangeTreeData.fire();
 	}
@@ -32,8 +28,9 @@ export class DepNodeProvider implements vscode.TreeDataProvider<File> {
             return Promise.resolve([]);
         }
 
+		const files = store.currentPRFiles;
 		return new Promise(resolve => {
-            resolve(this.files);
+            resolve(files.map(f => new File(f.filename,  {command: 'pullRequester.showDiff', title: 'Show Diff', arguments: [f.filename]})));
 		});
 	}
 }

@@ -1,7 +1,6 @@
 import * as vscode from 'vscode';
 import fetch from 'node-fetch';
 import { store } from '../store';
-
 import * as diffParse from 'parse-diff';
 
 export async function addPullRequestComment() {
