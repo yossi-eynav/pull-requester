@@ -11,6 +11,7 @@ import { readAllFileComments } from './commands/readAllFileComment';
 import { store, resetStore } from './store';
 import { provider } from './providers/commentsReviewer';
 import { setLocalBranchAsRemote, setLocalBranchAsBase } from './commands/setLocalBranch';
+import { StatusBar } from './statusBar';
 
 export async function activate(context: vscode.ExtensionContext) {
     const pullRequestFilesProvider = new PrFileProvider();
@@ -30,8 +31,9 @@ export async function activate(context: vscode.ExtensionContext) {
             await selectPullRequest();
             pullRequestFilesProvider.refresh();
             const selectedPull = store.currentPullRequest;
-            statusDisposable =  vscode.window.setStatusBarMessage(`Review in progress: ${selectedPull.title} by @${selectedPull.user.login}`)
-            context.subscriptions.push(statusDisposable);
+            statusDisposable =  vscode.window.setStatusBarMessage(`Review in progress: ${selectedPull.title.substring(0,10)}... by @${selectedPull.user.login}`)
+            const fileStatus = new StatusBar();
+            context.subscriptions.push(statusDisposable, fileStatus);
         } catch(e) {
             vscode.window.showErrorMessage(e.message);
         }
