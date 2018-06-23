@@ -25,7 +25,7 @@ export async function selectPullRequest() {
         title: "Setting your environment",
         cancellable: false
     }, async (progress, _) => {
-        await execute({cmd: 'touch /tmp/empty'});
+        await fs.createFile('/tmp/empty');
 
         // progress.report({ increment: 0, message: "git fetch" });
         // await execute({cmd: 'git fetch'});
