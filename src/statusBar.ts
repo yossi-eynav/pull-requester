@@ -49,7 +49,11 @@ export class StatusBar {
     
         const count = await this.fetchCommentCounts();
         this._statusBarItem.text =  `$(pencil) ${count} Pull Request's Comments`;
-        this._statusBarItem.command = 'pullRequester.readComments';
+        if(count > 0) {
+            this._statusBarItem.command = 'pullRequester.readComments';
+        } else {
+            this._statusBarItem.command = undefined;
+        }
         this._statusBarItem.show();
     }
 

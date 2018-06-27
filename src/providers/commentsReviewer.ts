@@ -34,8 +34,6 @@ export class TextDocumentContentProvider implements vscode.TextDocumentContentPr
             <script src="https://unpkg.com/react-dom/umd/react-dom.production.min.js"></script>
         </head>
         <style>
-            @import url('https://fonts.googleapis.com/css?family=Sunflower:300');
-
             body {
                 font-family: 'Sunflower', sans-serif;
                 color: #000;
@@ -101,22 +99,21 @@ export class TextDocumentContentProvider implements vscode.TextDocumentContentPr
                     return (
                         <article id={comment.id}>
                             <header>
-                                <a href={comment.user.html_url} className="user" target="_blank">
+                                <div className="user">
                                     <img src={comment.user.avatar_url}/>
                                     <span>{comment.user.login}</span>
-                                </a>
+                                </div>
                                 <span>{date}</span>
                             </header>
                     
-                            <pre dangerouslySetInnerHTML={{ __html: commentText }}></pre>
-
                             <pre>
-                                <code dangerouslySetInnerHTML={{ __html: diffHunk }}></code>
+                                <code> {diffHunk}</code>
                             </pre>
-                    
+                            <pre>
+                            {commentText}
+                            </pre>
                             <footer>
                                 <span>{comment.path}</span>
-                                <a href={comment.html_url} target="_blank">Comment Link</a>
                             </footer>
                         </article>
                     );
@@ -124,8 +121,7 @@ export class TextDocumentContentProvider implements vscode.TextDocumentContentPr
                 
                 function CommentCardContainer() {
                     return (
-                        <div className="comments">
-                            <a href={commentList[0].pull_request_url} target="_blank">Pull Request</a>
+                        <div className="comments">9
                             {commentList.map((comment) => {
                                 return <CommentCard comment={comment} key={comment.id}/>;
                             })}
@@ -135,7 +131,9 @@ export class TextDocumentContentProvider implements vscode.TextDocumentContentPr
 
                 ReactDOM.render(<CommentCardContainer/>, document.getElementById('root'));
             </script>
-       
+            <style>
+                @import url('https://fonts.googleapis.com/css?family=Sunflower:300');
+            </style>
         </body>
         `;
     }
