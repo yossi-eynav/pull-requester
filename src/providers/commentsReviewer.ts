@@ -1,7 +1,6 @@
 import * as vscode from 'vscode';
-import { store } from '../store';
-import * as escape from 'escape-html';
 import fetch from 'node-fetch';
+import { store } from '../store';
 
 export class TextDocumentContentProvider implements vscode.TextDocumentContentProvider {
     private _onDidChange = new vscode.EventEmitter<vscode.Uri>();
@@ -13,8 +12,8 @@ export class TextDocumentContentProvider implements vscode.TextDocumentContentPr
         const file = editor.document.uri.path.replace('/tmp/', '');
         const token = store.githubToken;
 
-        const commentsRequests = await fetch(store.currentPullRequest.url + `/comments?access_token=${token}`)
-        const comments = await commentsRequests.json()
+        const commentsRequests = await fetch(store.currentPullRequest.url + `/comments?access_token=${token}`);
+        const comments = await commentsRequests.json();
         
         return this.snippet(comments.filter(c => c.path === file));
     }
@@ -28,7 +27,6 @@ export class TextDocumentContentProvider implements vscode.TextDocumentContentPr
     }
 
     private snippet(comments: any): string {
-        
         return `
         <head>
             <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
@@ -95,9 +93,10 @@ export class TextDocumentContentProvider implements vscode.TextDocumentContentPr
             <script type="text/babel">
                 const commentList = ${JSON.stringify(comments)};
 
-                function CommentCard({comment}) {
+                function CommentCard({ comment }) {
                     const date = new Date(comment.created_at).toDateString();
                     const commentText = comment.body.replace(/(@\w*)/g, '<a href="//github.com/$1" target="_blank">$1</a>');
+                    const diffHunk = comment.diff_hunk;
                 
                     return (
                         <article id={comment.id}>
@@ -110,6 +109,10 @@ export class TextDocumentContentProvider implements vscode.TextDocumentContentPr
                             </header>
                     
                             <pre dangerouslySetInnerHTML={{ __html: commentText }}></pre>
+
+                            <pre>
+                                <code dangerouslySetInnerHTML={{ __html: diffHunk }}></code>
+                            </pre>
                     
                             <footer>
                                 <span>{comment.path}</span>
@@ -133,7 +136,8 @@ export class TextDocumentContentProvider implements vscode.TextDocumentContentPr
                 ReactDOM.render(<CommentCardContainer/>, document.getElementById('root'));
             </script>
        
-        </body>`;
+        </body>
+        `;
     }
 }
 
