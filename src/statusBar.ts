@@ -5,19 +5,19 @@ import { debounce } from 'lodash';
 
 export class StatusBar {
     private _statusBarItem: vscode.StatusBarItem;
+    private debouncedUpdateWordCount: () => {};
 
     constructor() {
         this._statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
+        this.debouncedUpdateWordCount = debounce(this.updateWordCount, 1000, {
+            leading: true
+        });
         this.addEventListeners();
     }
 
     private addEventListeners() {
-        vscode.window.onDidChangeTextEditorSelection(debounce(this.updateWordCount, 1000, {
-            leading: true
-        }), this);
-        vscode.window.onDidChangeActiveTextEditor(debounce(this.updateWordCount, 1000, {
-            leading: true
-        }), this);
+        vscode.window.onDidChangeTextEditorSelection(this.debouncedUpdateWordCount, this);
+        vscode.window.onDidChangeActiveTextEditor(this.debouncedUpdateWordCount, this);
     }
 
     public async fetchCommentCounts() {
