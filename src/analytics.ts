@@ -1,4 +1,3 @@
-import fetch from 'node-fetch';
 import * as uuid from 'uuid/v3';
 
 const GUID = uuid();
