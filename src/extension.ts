@@ -12,8 +12,11 @@ import { store, resetStore } from './store';
 import { provider } from './providers/commentsReviewer';
 import { setLocalBranchAsRemote, setLocalBranchAsBase } from './commands/setLocalBranch';
 import { StatusBar } from './statusBar';
+import { report } from './analytics';
 
 export async function activate(context: vscode.ExtensionContext) {
+    report({category: 'extension_event', action: 'activate'});
+
     const pullRequestFilesProvider = new PrFileProvider();
     let statusDisposable: vscode.Disposable;
     const disposable = vscode.workspace.registerTextDocumentContentProvider('pr-comment-preview', provider);
@@ -26,6 +29,8 @@ export async function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand('pullRequester.showDiff', showDiff);
     vscode.commands.registerCommand('pullRequester.viewPull', viewPullInBrowser);
     vscode.commands.registerCommand('pullRequester.selectPullRequest', async () => {
+        report({category: 'user_action', action: 'selectPullRequest'});
+
         await vscode.commands.executeCommand('pullRequester.reset');
         try {
             await selectPullRequest();
