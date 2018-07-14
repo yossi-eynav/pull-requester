@@ -1,7 +1,7 @@
-import * as uuid from 'uuid/v3';
+import * as uuid from 'uuid/v1';
+import * as request from 'request';
 
 const GUID = uuid();
-import * as request from 'request';
 
 function report({category, action}): void {
     const data = {
